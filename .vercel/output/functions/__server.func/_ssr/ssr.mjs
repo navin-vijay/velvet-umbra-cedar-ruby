@@ -1,4 +1,4 @@
-import { n as __exportAll } from "../_runtime.mjs";
+import { r as __exportAll } from "../_runtime.mjs";
 import { n as require_react } from "../_libs/@radix-ui/react-compose-refs+[...].mjs";
 import { D as toCrossJSONAsync, F as waitForReason, G as parseRedirect, H as isPromise, I as _getRenderedMatches, K as rootRouteId, L as executeRewriteInput, M as getStylesheetHref, N as resolveManifestAssetLink, O as toCrossJSONStream, P as resolveManifestCssLink, R as invariant, T as fromJSON, V as isDangerousProtocol, W as isRedirect, a as disposeSsrResponse, c as replaceSsrResponse, i as defineHandlerCallback, j as getScriptPreloadAttrs, l as stripSsrResponseBody, m as RouterProvider, o as isSsrResponse, q as isNotFound, r as bindSsrResponseToRequest, s as normalizeSsrResponse, t as renderRouterToStream, x as require_jsx_runtime } from "../_libs/@tanstack/react-router+[...].mjs";
 import { n as createServerHistory } from "../_libs/tanstack__history.mjs";
@@ -104,7 +104,7 @@ var HEADERS = { TSS_SHELL: "X-TSS_SHELL" };
 * the dev styles URL for route-scoped CSS collection.
 */
 async function getStartManifest(matchedRoutes) {
-	const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-Dkogh4Rw.mjs");
+	const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-BibK0mmu.mjs");
 	const startManifest = tsrStartManifest();
 	let routes = startManifest.routes;
 	routes[rootRouteId];
@@ -123,10 +123,20 @@ async function getStartManifest(matchedRoutes) {
 		routes: manifestRoutes
 	};
 }
-var manifest = { "1dc521f17c4a7f82bbfa0a1c2e19e0ca29afd62a3e757622ae4f5b3fe552dc5e": {
-	functionName: "extractLetter_createServerFn_handler",
-	importer: () => import("./extract-BQFP14R3.mjs")
-} };
+var manifest = {
+	"1655da6959b6a57bf024f3a4c843c1d0ae3c706a6fc90f23195229a952006422": {
+		functionName: "extractDetailPage_createServerFn_handler",
+		importer: () => import("./extract-B7T9o82p.mjs")
+	},
+	"1dc521f17c4a7f82bbfa0a1c2e19e0ca29afd62a3e757622ae4f5b3fe552dc5e": {
+		functionName: "extractLetter_createServerFn_handler",
+		importer: () => import("./extract-B7T9o82p.mjs")
+	},
+	"f4b155c1d41c5d127d0efdd0aadeee67ff1ac39e7fc00760efbb79b704c4c5a3": {
+		functionName: "loadCatalogPage_createServerFn_handler",
+		importer: () => import("./extract-B7T9o82p.mjs")
+	}
+};
 async function getServerFnById(id, access) {
 	const serverFnInfo = manifest[id];
 	if (!serverFnInfo) throw new Error("Server function info not found for " + id);
@@ -1529,7 +1539,7 @@ var getBaseManifest = getProdBaseManifest;
 var createEarlyHintsForRequest = createEarlyHintsCollector;
 async function loadEntries() {
 	const [routerEntry, startEntry, pluginAdapters] = await Promise.all([
-		import("./router-dlQU2ERt.mjs").then((n) => n.t),
+		import("./router-BfBV9kCm.mjs").then((n) => n.t),
 		import("./start-5Z2QO8AU.mjs"),
 		import("./empty-plugin-adapters-D9UWiqvJ.mjs")
 	]);

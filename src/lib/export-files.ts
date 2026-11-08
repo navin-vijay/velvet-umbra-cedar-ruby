@@ -1,11 +1,13 @@
-import type { IngredientLink, LetterKey } from "./tgsc";
+import type { IngredientDetail, IngredientLink, LetterKey } from "./tgsc";
 
 export function displayName(item: IngredientLink): string {
   return item.prefix ? `${item.prefix} ${item.name}` : item.name;
 }
 
 function csvCell(value: string): string {
-  return `"${value.replace(/"/g, '""')}"`;
+  const firstContent = value.trimStart()[0] ?? "";
+  const safeValue = ["=", "+", "-", "@"].includes(firstContent) ? `'${value}` : value;
+  return `"${safeValue.replace(/"/g, '""')}"`;
 }
 
 export function mergeIngredients(groups: IngredientLink[][]): IngredientLink[] {
@@ -61,6 +63,68 @@ export function buildJson(items: IngredientLink[], letters: LetterKey[]): string
       letters,
       extractedAt: new Date().toISOString(),
       links,
+    },
+    null,
+    2,
+  )}\n`;
+}
+
+export function buildDetailCsv(
+  items: (IngredientDetail & { detailStatus?: string; detailError?: string | null })[],
+): string {
+  const header = [
+    "name",
+    "cas",
+    "uses",
+    "kind",
+    "letter",
+    "url",
+    "path",
+    "synonym",
+    "category",
+    "sections_json",
+    "extracted_at",
+    "detail_status",
+    "detail_error",
+  ];
+  const rows = items.map((item) =>
+    [
+      displayName(item),
+      item.cas,
+      item.uses,
+      item.kind,
+      item.letter,
+      item.url,
+      item.path,
+      item.synonym,
+      item.category,
+      JSON.stringify(item.sections),
+      item.extractedAt,
+      item.detailStatus ?? "complete",
+      item.detailError ?? "",
+    ]
+      .map(csvCell)
+      .join(","),
+  );
+  return `\uFEFF${[header.join(","), ...rows].join("\r\n")}\r\n`;
+}
+
+export function buildDetailJson(
+  items: IngredientDetail[],
+  letters: LetterKey[],
+  failures: { path: string; error: string }[],
+  notExtractedPaths: string[],
+): string {
+  return `${JSON.stringify(
+    {
+      schema: "tgsc-perfume-catalog/v1",
+      source: "The Good Scents Company",
+      count: items.length,
+      letters,
+      extractedAt: new Date().toISOString(),
+      failedPages: failures,
+      notExtractedPaths,
+      ingredients: items,
     },
     null,
     2,

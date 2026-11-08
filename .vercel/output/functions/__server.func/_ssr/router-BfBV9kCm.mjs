@@ -1,10 +1,10 @@
-import { i as __toESM } from "../_runtime.mjs";
+import { o as __toESM } from "../_runtime.mjs";
 import { n as require_react } from "../_libs/@radix-ui/react-compose-refs+[...].mjs";
 import { _ as lazyRouteComponent, b as useRouter, f as Scripts, g as Outlet, h as createRouter, p as HeadContent, v as createFileRoute, x as require_jsx_runtime, y as createRootRoute } from "../_libs/@tanstack/react-router+[...].mjs";
-import { n as isLetterKey } from "./tgsc-Bfrw_1Zu.mjs";
-import { n as TriangleAlert } from "../_libs/lucide-react.mjs";
+import { n as getSql } from "./excel-checkpoint-D4xESMik.mjs";
+import { t as TriangleAlert } from "../_libs/lucide-react.mjs";
 import { a as union, i as string, n as number, r as object, t as literal } from "../_libs/zod.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-dlQU2ERt.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router-BfBV9kCm.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var __defProp = Object.defineProperty;
@@ -308,7 +308,7 @@ function PreviewHostBridge() {
 	}, [router]);
 	return null;
 }
-var styles_default = "/assets/styles-CtCHtYvJ.css";
+var styles_default = "/assets/styles-DbgPxCuP.css";
 var APP_NAME = "Scent Index";
 var Route$2 = createRootRoute({
 	head: () => ({
@@ -372,14 +372,19 @@ var Route$2 = createRootRoute({
 		] })]
 	})
 });
-var $$splitComponentImporter = () => import("./routes-DrLMIALK.mjs");
+var $$splitComponentImporter = () => import("./routes-B3eSszvy.mjs");
 var Route$1 = createFileRoute("/")({ component: lazyRouteComponent($$splitComponentImporter, "component") });
 function displayName(item) {
 	return item.prefix ? `${item.prefix} ${item.name}` : item.name;
 }
-function csvEscape(value) {
-	if (/[",\n]/.test(value)) return `"${value.replace(/"/g, "\"\"")}"`;
-	return value;
+function csvCell(value) {
+	const firstContent = value.trimStart()[0] ?? "";
+	return `"${([
+		"=",
+		"+",
+		"-",
+		"@"
+	].includes(firstContent) ? `'${value}` : value).replace(/"/g, "\"\"")}"`;
 }
 function mergeIngredients(groups) {
 	const out = [];
@@ -391,61 +396,102 @@ function mergeIngredients(groups) {
 	}
 	return out;
 }
-function buildCsv(items) {
+function buildDetailCsv(items) {
 	const header = [
 		"name",
-		"url",
 		"cas",
 		"uses",
 		"kind",
-		"letter"
+		"letter",
+		"url",
+		"path",
+		"synonym",
+		"category",
+		"sections_json",
+		"extracted_at",
+		"detail_status",
+		"detail_error"
 	];
 	const rows = items.map((item) => [
 		displayName(item),
-		item.url,
 		item.cas,
 		item.uses,
 		item.kind,
-		item.letter
-	].map(csvEscape).join(","));
-	return `\uFEFF${[header.join(","), ...rows].join("\n")}\n`;
+		item.letter,
+		item.url,
+		item.path,
+		item.synonym,
+		item.category,
+		JSON.stringify(item.sections),
+		item.extractedAt,
+		item.detailStatus ?? "complete",
+		item.detailError ?? ""
+	].map(csvCell).join(","));
+	return `\uFEFF${[header.join(","), ...rows].join("\r\n")}\r\n`;
 }
-function buildJson(items, letters) {
+function buildDetailJson(items, letters, failures, notExtractedPaths) {
 	return `${JSON.stringify({
+		schema: "tgsc-perfume-catalog/v1",
+		source: "The Good Scents Company",
 		count: items.length,
 		letters,
 		extractedAt: (/* @__PURE__ */ new Date()).toISOString(),
-		links: items.map((item) => ({
-			name: displayName(item),
-			url: item.url,
-			cas: item.cas,
-			uses: item.uses,
-			kind: item.kind,
-			letter: item.letter
-		}))
+		failedPages: failures,
+		notExtractedPaths,
+		ingredients: items
 	}, null, 2)}\n`;
 }
 var Route = createFileRoute("/api/export")({ server: { handlers: { GET: async ({ request }) => {
-	const url = new URL(request.url);
-	const format = (url.searchParams.get("format") ?? "csv").toLowerCase();
-	const letters = (url.searchParams.get("letters") ?? "a").split(",").map((part) => part.trim().toLowerCase()).filter(isLetterKey);
-	if (letters.length === 0) return new Response("Unknown listing letters", { status: 400 });
-	if (format !== "csv" && format !== "json") return new Response("format must be csv or json", { status: 400 });
-	const { loadLetter } = await import("./tgsc-fetch.server-CCYt4grn.mjs");
-	const groups = [];
-	for (const letter of letters) {
-		const result = await loadLetter(letter);
-		groups.push(result.ingredients);
+	const format = (new URL(request.url).searchParams.get("format") ?? "csv").toLowerCase();
+	if (format !== "csv" && format !== "json" && format !== "xlsx") return new Response("format must be csv, json, or xlsx", { status: 400 });
+	const sql = await getSql();
+	if (format === "xlsx") {
+		const { ensureExcelCheckpointSchema } = await import("./xlsx-checkpoint.server-B41ft2pv.mjs");
+		await ensureExcelCheckpointSchema();
+		const [checkpoint] = await sql.query(`select workbook_base64 as "workbookBase64"
+             from perfume_excel_checkpoint where id = 1`);
+		if (!checkpoint?.workbookBase64) return new Response(`Excel workbook is generated after the first 250 detail pages.`, {
+			status: 409,
+			headers: { "Cache-Control": "no-store" }
+		});
+		return new Response(Buffer.from(checkpoint.workbookBase64, "base64"), { headers: {
+			"Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+			"Content-Disposition": "attachment; filename=\"A-Z Extracted.xlsx\"; filename*=UTF-8''A-Z%20Extracted.xlsx",
+			"Cache-Control": "no-store"
+		} });
 	}
-	const items = mergeIngredients(groups);
-	const stem = `tgsc-${letters.join("-")}-links`;
-	if (format === "json") return fileResponse(`${stem}.json`, "application/json", buildJson(items, letters));
-	return fileResponse(`${stem}.csv`, "text/csv", buildCsv(items));
+	const items = (await sql.query(`select path, name, prefix, url, cas, uses, kind, letter, title, synonym, category,
+             detail_sections as sections, detail_extracted_at::text as "extractedAt",
+             detail_status as "detailStatus", detail_error as "detailError"
+           from perfume_ingredients
+           order by letter, path`)).map((item) => ({
+		...item,
+		title: item.title ?? "",
+		synonym: item.synonym ?? "",
+		category: item.category ?? "",
+		sections: item.sections ?? [],
+		extractedAt: item.extractedAt ?? ""
+	}));
+	const [{ letters = [] } = {}] = await sql.query(`select coalesce(array_agg(distinct letter order by letter), array[]::text[]) as letters
+           from perfume_ingredients`);
+	const stem = "tgsc-perfume-database";
+	if (format === "json") {
+		const completedItems = items.filter((item) => item.detailStatus === "complete");
+		const pending = await sql.query(`select path, detail_error as error from perfume_ingredients
+             where detail_status != 'complete' order by letter, path`);
+		const failures = pending.flatMap((item) => item.error ? [{
+			path: item.path,
+			error: item.error
+		}] : []);
+		const notExtractedPaths = pending.filter((item) => !item.error).map((item) => item.path);
+		return fileResponse(`${stem}.json`, "application/json", buildDetailJson(completedItems, letters, failures, notExtractedPaths));
+	}
+	return fileResponse(`${stem}.csv`, "text/csv", buildDetailCsv(items));
 } } } });
 function fileResponse(filename, mime, body) {
 	return new Response(body, { headers: {
 		"Content-Type": `${mime}; charset=utf-8`,
-		"Content-Disposition": `attachment; filename="${filename}"`,
+		"Content-Disposition": `attachment; filename="${filename}"; filename*=UTF-8''${filename}`,
 		"Cache-Control": "no-store"
 	} });
 }
@@ -470,4 +516,4 @@ function getRouter() {
 	});
 }
 //#endregion
-export { mergeIngredients as a, displayName as i, buildCsv as n, buildJson as r, router_exports as t };
+export { displayName as n, mergeIngredients as r, router_exports as t };

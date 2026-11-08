@@ -28,3 +28,391 @@
  ╰─────────────────────────────────────╯
 
   ➜  Local:   http://127.0.0.1:8081/
+
+> dev
+> node scripts/with-app-env.mjs vite dev --host 0.0.0.0 --port 8080
+
+
+  VITE v8.3.1  ready in 12357 ms
+
+  ➜  Local:   http://localhost:8080/
+  ➜  Network: http://10.0.10.209:8080/  eth0
+2:34:39 PM [vite] (ssr) connected.
+2:34:39 PM [vite] (client) [optimizer] bundling dependencies...
+2:35:07 PM [vite] (client) dependencies optimized: @tanstack/router-core, @tanstack/router-core/isServer, @tanstack/router-core/ssr/client, seroval
+2:54:03 PM [vite] (client) hmr update /src/styles.css?direct, /src/components/scent-index.tsx
+2:54:03 PM [vite] (ssr) page reload src/lib/extract.ts
+2:54:03 PM [vite] (ssr) program reload
+2:54:16 PM [vite] (client) hmr update /src/styles.css?direct, /src/components/scent-index.tsx
+2:54:16 PM [vite] (ssr) page reload src/lib/extract.ts
+2:54:27 PM [vite] (client) hmr update /src/styles.css?direct
+2:54:27 PM [vite] (ssr) page reload src/routes/api/export.ts
+2:54:44 PM [vite] (client) hmr update /src/styles.css?direct, /src/components/scent-index.tsx
+2:54:44 PM [vite] (ssr) page reload src/components/scent-index.tsx
+2:54:48 PM [vite] (client) hmr update /src/styles.css?direct, /src/components/scent-index.tsx
+2:54:48 PM [vite] (ssr) page reload src/components/scent-index.tsx
+2:54:54 PM [vite] (client) hmr update /src/styles.css?direct, /src/components/scent-index.tsx
+2:54:54 PM [vite] (ssr) page reload src/components/scent-index.tsx
+2:55:06 PM [vite] (client) hmr update /src/styles.css?direct
+2:55:06 PM [vite] (ssr) hmr update /src/lib/extract.ts?tss-serverfn-split
+2:55:06 PM [vite] (ssr) hot updated: /src/lib/extract.ts?tss-serverfn-split
+2:55:06 PM [vite] (client) hmr update /src/styles.css?direct, /src/components/scent-index.tsx
+2:55:06 PM [vite] (ssr) page reload src/lib/extract.ts
+2:55:06 PM [vite] (ssr) program reload
+2:55:07 PM [vite] (client) hmr update /src/styles.css?direct, /src/components/scent-index.tsx
+2:55:07 PM [vite] (ssr) page reload src/components/scent-index.tsx
+2:55:07 PM [vite] (client) hmr update /src/styles.css?direct
+2:55:07 PM [vite] (ssr) page reload src/routes/api/export.ts
+2:55:28 PM [vite] (client) hmr update /src/styles.css?direct
+2:55:28 PM [vite] (ssr) hmr update /src/lib/extract.ts?tss-serverfn-split
+2:55:28 PM [vite] (ssr) hot updated: /src/lib/extract.ts?tss-serverfn-split
+2:55:41 PM [vite] (client) hmr update /src/styles.css?direct
+2:55:41 PM [vite] (ssr) hmr update /src/lib/extract.ts?tss-serverfn-split
+2:55:41 PM [vite] (ssr) hot updated: /src/lib/extract.ts?tss-serverfn-split
+2:55:45 PM [vite] (client) hmr update /src/styles.css?direct, /src/components/scent-index.tsx
+2:55:45 PM [vite] (ssr) page reload src/lib/extract.ts
+2:55:45 PM [vite] (ssr) program reload
+2:56:25 PM [vite] (client) hmr update /src/styles.css?direct
+2:56:25 PM [vite] (ssr) hmr update /src/lib/extract.ts?tss-serverfn-split
+2:56:25 PM [vite] (ssr) hot updated: /src/lib/extract.ts?tss-serverfn-split
+2:56:29 PM [vite] (client) hmr update /src/styles.css?direct
+2:56:29 PM [vite] (ssr) hmr update /src/lib/extract.ts?tss-serverfn-split
+2:56:29 PM [vite] (ssr) hot updated: /src/lib/extract.ts?tss-serverfn-split
+2:56:34 PM [vite] (client) hmr update /src/styles.css?direct, /src/components/scent-index.tsx
+2:56:34 PM [vite] (ssr) page reload src/lib/extract.ts
+2:56:34 PM [vite] (ssr) program reload
+2:56:38 PM [vite] (client) hmr update /src/styles.css?direct
+2:56:38 PM [vite] (ssr) page reload src/routes/api/export.ts
+2:58:43 PM [vite] (client) hmr update /src/styles.css?direct, /src/components/scent-index.tsx
+2:58:43 PM [vite] (ssr) page reload src/lib/extract.ts
+2:58:43 PM [vite] (ssr) program reload
+
+> preview
+> node scripts/with-app-env.mjs vite preview
+
+
+ ╭────────── [Build Info] ─────────────╮
+ │                                     │
+ │  - Build Directory: .vercel/output  │
+ │  - Date: 10/9/2026, 3:01:51 PM      │
+ │  - Nitro Version: 3.0.260610-beta   │
+ │  - Nitro Preset: vercel             │
+ │                                     │
+ ╰─────────────────────────────────────╯
+
+  ➜  Local:   http://127.0.0.1:8081/
+[db] PGLite bootstrap failed: Error: ENOENT: no such file or directory, open '/workspaces/velvet-umbra-cedar-ruby/.vercel/output/functions/__server.func/_libs/pglite.data'
+    at async open (node:internal/fs/promises:1345:25)
+    at async Module.readFile (node:internal/fs/promises:1996:14)
+    at async Object.w$2 (file:///workspaces/velvet-umbra-cedar-ruby/.vercel/output/functions/__server.func/_libs/electric-sql__pglite.mjs:114:16) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/workspaces/velvet-umbra-cedar-ruby/.vercel/output/functions/__server.func/_libs/pglite.data'
+}
+node:internal/process/promises:394
+    triggerUncaughtException(err, true /* fromPromise */);
+    ^
+
+Error: ENOENT: no such file or directory, open '/workspaces/velvet-umbra-cedar-ruby/.vercel/output/functions/__server.func/_libs/pglite.data'
+    at async open (node:internal/fs/promises:1345:25)
+    at async Module.readFile (node:internal/fs/promises:1996:14)
+    at async Object.w$2 (file:///workspaces/velvet-umbra-cedar-ruby/.vercel/output/functions/__server.func/_libs/electric-sql__pglite.mjs:114:16) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/workspaces/velvet-umbra-cedar-ruby/.vercel/output/functions/__server.func/_libs/pglite.data'
+}
+
+Node.js v24.21.0
+AbortError: This operation was aborted
+    at new DOMException (node:internal/per_context/domexception:76:18)
+    ... 8 lines matching cause stack trace ...
+    at TCP.<anonymous> (node:net:362:12) {
+  cause: DOMException [AbortError]: This operation was aborted
+      at new DOMException (node:internal/per_context/domexception:76:18)
+      at AbortController.abort (node:internal/abort_controller:572:18)
+      at abort (file:///workspaces/velvet-umbra-cedar-ruby/node_modules/srvx/dist/adapters/node.mjs:316:51)
+      at ServerResponse.<anonymous> (file:///workspaces/velvet-umbra-cedar-ruby/node_modules/srvx/dist/adapters/node.mjs:320:35)
+      at ServerResponse.wrapper (node:events:639:12)
+      at ServerResponse.emit (node:events:514:28)
+      at emitCloseNT (node:_http_server:1156:10)
+      at Socket.onServerResponseClose (node:_http_server:292:5)
+      at Socket.emit (node:events:526:24)
+      at TCP.<anonymous> (node:net:362:12),
+  status: 500,
+  statusText: undefined,
+  headers: undefined,
+  data: undefined,
+  body: undefined,
+  unhandled: true
+}
+AbortError: This operation was aborted
+    at new DOMException (node:internal/per_context/domexception:76:18)
+    ... 8 lines matching cause stack trace ...
+    at TCP.<anonymous> (node:net:362:12) {
+  cause: DOMException [AbortError]: This operation was aborted
+      at new DOMException (node:internal/per_context/domexception:76:18)
+      at AbortController.abort (node:internal/abort_controller:572:18)
+      at abort (file:///workspaces/velvet-umbra-cedar-ruby/node_modules/srvx/dist/adapters/node.mjs:316:51)
+      at ServerResponse.<anonymous> (file:///workspaces/velvet-umbra-cedar-ruby/node_modules/srvx/dist/adapters/node.mjs:320:35)
+      at ServerResponse.wrapper (node:events:639:12)
+      at ServerResponse.emit (node:events:514:28)
+      at emitCloseNT (node:_http_server:1156:10)
+      at Socket.onServerResponseClose (node:_http_server:292:5)
+      at Socket.emit (node:events:526:24)
+      at TCP.<anonymous> (node:net:362:12),
+  status: 500,
+  statusText: undefined,
+  headers: undefined,
+  data: undefined,
+  body: undefined,
+  unhandled: true
+}
+3:18:44 PM [vite] (client) hmr update /src/styles.css?direct
+
+> preview
+> node scripts/with-app-env.mjs vite preview
+
+
+ ╭────────── [Build Info] ─────────────╮
+ │                                     │
+ │  - Build Directory: .vercel/output  │
+ │  - Date: 10/9/2026, 3:18:52 PM      │
+ │  - Nitro Version: 3.0.260610-beta   │
+ │  - Nitro Preset: vercel             │
+ │                                     │
+ ╰─────────────────────────────────────╯
+
+  ➜  Local:   http://127.0.0.1:8081/
+node:internal/fs/promises:1345
+  return new FileHandle(await PromisePrototypeThen(
+                        ^
+
+Error: ENOENT: no such file or directory, open '/workspaces/velvet-umbra-cedar-ruby/.vercel/output/functions/__server.func/_libs/pglite.wasm'
+    at async open (node:internal/fs/promises:1345:25)
+    at async Module.readFile (node:internal/fs/promises:1996:14)
+    at async Object.b$2 (file:///workspaces/velvet-umbra-cedar-ruby/.vercel/output/functions/__server.func/_libs/electric-sql__pglite.mjs:99:11) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/workspaces/velvet-umbra-cedar-ruby/.vercel/output/functions/__server.func/_libs/pglite.wasm'
+}
+
+Node.js v24.21.0
+3:19:13 PM [vite] (client) hmr update /src/styles.css?direct
+3:19:27 PM [vite] (client) hmr update /src/styles.css?direct
+
+> preview
+> node scripts/with-app-env.mjs vite preview
+
+
+ ╭────────── [Build Info] ─────────────╮
+ │                                     │
+ │  - Build Directory: .vercel/output  │
+ │  - Date: 10/9/2026, 3:19:35 PM      │
+ │  - Nitro Version: 3.0.260610-beta   │
+ │  - Nitro Preset: vercel             │
+ │                                     │
+ ╰─────────────────────────────────────╯
+
+  ➜  Local:   http://127.0.0.1:8081/
+node:internal/fs/promises:1345
+  return new FileHandle(await PromisePrototypeThen(
+                        ^
+
+Error: ENOENT: no such file or directory, open '/workspaces/velvet-umbra-cedar-ruby/.vercel/output/functions/__server.func/_libs/initdb.wasm'
+    at async open (node:internal/fs/promises:1345:25)
+    at async Module.readFile (node:internal/fs/promises:1996:14)
+    at async Object.b$2 (file:///workspaces/velvet-umbra-cedar-ruby/.vercel/output/functions/__server.func/_libs/electric-sql__pglite.mjs:99:11) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/workspaces/velvet-umbra-cedar-ruby/.vercel/output/functions/__server.func/_libs/initdb.wasm'
+}
+
+Node.js v24.21.0
+3:20:01 PM [vite] (client) hmr update /src/styles.css?direct
+
+> preview
+> node scripts/with-app-env.mjs vite preview
+
+
+ ╭────────── [Build Info] ─────────────╮
+ │                                     │
+ │  - Build Directory: .vercel/output  │
+ │  - Date: 10/9/2026, 3:20:11 PM      │
+ │  - Nitro Version: 3.0.260610-beta   │
+ │  - Nitro Preset: vercel             │
+ │                                     │
+ ╰─────────────────────────────────────╯
+
+  ➜  Local:   http://127.0.0.1:8081/
+3:29:44 PM [vite] (client) hmr update /src/styles.css?direct, /src/components/scent-index.tsx
+3:29:44 PM [vite] (ssr) page reload src/components/scent-index.tsx
+3:29:44 PM [vite] (ssr) program reload
+3:29:51 PM [vite] (client) hmr update /src/styles.css?direct, /src/components/scent-index.tsx
+3:29:51 PM [vite] (ssr) page reload src/components/scent-index.tsx
+
+> preview
+> node scripts/with-app-env.mjs vite preview
+
+
+ ╭────────── [Build Info] ─────────────╮
+ │                                     │
+ │  - Build Directory: .vercel/output  │
+ │  - Date: 10/9/2026, 3:30:00 PM      │
+ │  - Nitro Version: 3.0.260610-beta   │
+ │  - Nitro Preset: vercel             │
+ │                                     │
+ ╰─────────────────────────────────────╯
+
+  ➜  Local:   http://127.0.0.1:8081/
+
+> dev
+> node scripts/with-app-env.mjs vite dev --host 0.0.0.0 --port 8080
+
+4:13:27 PM [vite] (client) Re-optimizing dependencies because lockfile has changed
+
+  VITE v8.3.1  ready in 3607 ms
+
+  ➜  Local:   http://localhost:8080/
+  ➜  Network: http://10.0.12.143:8080/  eth0
+4:13:43 PM [vite] (ssr) connected.
+4:15:48 PM [vite] (client) dependencies optimized: @tanstack/router-core, @tanstack/router-core/isServer, @tanstack/router-core/ssr/client, seroval
+4:15:59 PM [vite] (client) hmr update /src/styles.css?direct
+4:15:59 PM [vite] (ssr) page reload src/components/scent-index.tsx
+4:15:59 PM [vite] (ssr) program reload
+
+> preview
+> node scripts/with-app-env.mjs vite preview
+
+
+ ╭────────── [Build Info] ─────────────╮
+ │                                     │
+ │  - Build Directory: .vercel/output  │
+ │  - Date: 10/9/2026, 4:16:10 PM      │
+ │  - Nitro Version: 3.0.260610-beta   │
+ │  - Nitro Preset: vercel             │
+ │                                     │
+ ╰─────────────────────────────────────╯
+
+  ➜  Local:   http://127.0.0.1:8081/
+4:18:22 PM [vite] (client) hmr update /src/styles.css?direct, /src/components/scent-index.tsx
+4:18:22 PM [vite] (ssr) page reload src/lib/excel-checkpoint.ts
+4:18:22 PM [vite] (ssr) program reload
+4:18:22 PM [vite] (client) hmr update /src/styles.css?direct
+4:18:22 PM [vite] (client) hmr update /src/styles.css?direct, /src/components/scent-index.tsx
+4:18:22 PM [vite] (ssr) page reload src/lib/extract.ts
+4:18:22 PM [vite] (client) hmr update /src/styles.css?direct, /src/components/scent-index.tsx
+4:18:22 PM [vite] (ssr) page reload src/components/scent-index.tsx
+4:18:41 PM [vite] (client) hmr update /src/styles.css?direct, /src/components/scent-index.tsx
+4:18:41 PM [vite] (ssr) page reload src/components/scent-index.tsx
+
+> preview
+> node scripts/with-app-env.mjs vite preview
+
+
+ ╭────────── [Build Info] ─────────────╮
+ │                                     │
+ │  - Build Directory: .vercel/output  │
+ │  - Date: 10/9/2026, 4:18:54 PM      │
+ │  - Nitro Version: 3.0.260610-beta   │
+ │  - Nitro Preset: vercel             │
+ │                                     │
+ ╰─────────────────────────────────────╯
+
+  ➜  Local:   http://127.0.0.1:8081/
+4:20:34 PM [vite] (client) hmr update /src/styles.css?direct, /src/components/scent-index.tsx
+4:20:34 PM [vite] (ssr) page reload src/components/scent-index.tsx
+4:20:34 PM [vite] (ssr) program reload
+4:20:38 PM [vite] (client) hmr update /src/styles.css?direct, /src/components/scent-index.tsx
+4:20:38 PM [vite] (ssr) page reload src/components/scent-index.tsx
+
+> preview
+> node scripts/with-app-env.mjs vite preview
+
+
+ ╭────────── [Build Info] ─────────────╮
+ │                                     │
+ │  - Build Directory: .vercel/output  │
+ │  - Date: 10/9/2026, 4:20:50 PM      │
+ │  - Nitro Version: 3.0.260610-beta   │
+ │  - Nitro Preset: vercel             │
+ │                                     │
+ ╰─────────────────────────────────────╯
+
+  ➜  Local:   http://127.0.0.1:8081/
+AbortError: This operation was aborted
+    at new DOMException (node:internal/per_context/domexception:76:18)
+    ... 8 lines matching cause stack trace ...
+    at TCP.<anonymous> (node:net:362:12) {
+  cause: DOMException [AbortError]: This operation was aborted
+      at new DOMException (node:internal/per_context/domexception:76:18)
+      at AbortController.abort (node:internal/abort_controller:572:18)
+      at abort (file:///workspaces/velvet-umbra-cedar-ruby/node_modules/srvx/dist/adapters/node.mjs:316:51)
+      at ServerResponse.<anonymous> (file:///workspaces/velvet-umbra-cedar-ruby/node_modules/srvx/dist/adapters/node.mjs:320:35)
+      at ServerResponse.wrapper (node:events:639:12)
+      at ServerResponse.emit (node:events:514:28)
+      at emitCloseNT (node:_http_server:1156:10)
+      at Socket.onServerResponseClose (node:_http_server:292:5)
+      at Socket.emit (node:events:526:24)
+      at TCP.<anonymous> (node:net:362:12),
+  status: 500,
+  statusText: undefined,
+  headers: undefined,
+  data: undefined,
+  body: undefined,
+  unhandled: true
+}
+4:38:58 PM [vite] (client) hmr update /src/styles.css?direct
+4:38:58 PM [vite] (ssr) page reload src/lib/xlsx-checkpoint.server.ts
+4:38:58 PM [vite] (ssr) program reload
+4:39:06 PM [vite] (client) page reload src/lib/xlsx-checkpoint.server.ts
+4:39:06 PM [vite] (ssr) page reload src/lib/xlsx-checkpoint.server.ts
+4:39:32 PM [vite] (client) hmr update /src/styles.css?direct, /src/components/scent-index.tsx
+4:39:32 PM [vite] (ssr) page reload src/lib/excel-checkpoint.ts
+4:39:32 PM [vite] (ssr) program reload
+4:40:32 PM [vite] (client) hmr update /src/styles.css?direct
+4:40:32 PM [vite] (ssr) page reload src/lib/xlsx-workbook.ts
+4:40:32 PM [vite] (ssr) program reload
+4:40:36 PM [vite] (client) hmr update /src/styles.css?direct
+4:40:43 PM [vite] (client) hmr update /src/styles.css?direct
+4:40:43 PM [vite] (ssr) page reload src/lib/xlsx-checkpoint.server.ts
+4:40:43 PM [vite] (ssr) program reload
+4:41:05 PM [vite] (client) hmr update /src/styles.css?direct
+4:41:05 PM [vite] (ssr) page reload src/lib/xlsx-workbook.ts
+4:41:05 PM [vite] (ssr) program reload
+4:41:19 PM [vite] (client) hmr update /src/styles.css?direct
+4:41:27 PM [vite] (client) hmr update /src/styles.css?direct
+4:41:49 PM [vite] (client) hmr update /src/styles.css?direct
+4:41:49 PM [vite] (ssr) page reload src/lib/xlsx-workbook.ts
+4:41:49 PM [vite] (ssr) program reload
+4:42:27 PM [vite] (client) hmr update /src/styles.css?direct
+4:42:27 PM [vite] (client) hmr update /src/styles.css?direct, /src/components/scent-index.tsx
+4:42:27 PM [vite] (ssr) page reload src/components/scent-index.tsx
+4:42:36 PM [vite] (client) hmr update /src/styles.css?direct
+4:42:36 PM [vite] (ssr) page reload src/routes/api/export.ts
+4:42:36 PM [vite] (ssr) program reload
+AbortError: This operation was aborted
+    at new DOMException (node:internal/per_context/domexception:76:18)
+    ... 8 lines matching cause stack trace ...
+    at TCP.<anonymous> (node:net:362:12) {
+  cause: DOMException [AbortError]: This operation was aborted
+      at new DOMException (node:internal/per_context/domexception:76:18)
+      at AbortController.abort (node:internal/abort_controller:572:18)
+      at abort (file:///workspaces/velvet-umbra-cedar-ruby/node_modules/srvx/dist/adapters/node.mjs:316:51)
+      at ServerResponse.<anonymous> (file:///workspaces/velvet-umbra-cedar-ruby/node_modules/srvx/dist/adapters/node.mjs:320:35)
+      at ServerResponse.wrapper (node:events:639:12)
+      at ServerResponse.emit (node:events:514:28)
+      at emitCloseNT (node:_http_server:1156:10)
+      at Socket.onServerResponseClose (node:_http_server:292:5)
+      at Socket.emit (node:events:526:24)
+      at TCP.<anonymous> (node:net:362:12),
+  status: 500,
+  statusText: undefined,
+  headers: undefined,
+  data: undefined,
+  body: undefined,
+  unhandled: true
+}

@@ -1,0 +1,47 @@
+name: Resume perfume extraction
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+    inputs:
+      max_attempts:
+        description: Maximum ingredient pages to attempt in this run
+        required: true
+        default: "250"
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: perfume-extraction
+  cancel-in-progress: false
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      PERFUME_MAX_ATTEMPTS: ${{ github.event.inputs.max_attempts || '250' }}
+      PERFUME_RUN_BUDGET_SECONDS: "720"
+      PERFUME_REQUEST_DELAY_MS: "750"
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Apply database migrations
+        run: npm run db:migrate
+
+      - name: Resume ingredient detail extraction
+        run: npm run perfume:extract

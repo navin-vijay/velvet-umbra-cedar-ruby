@@ -49,6 +49,30 @@ export type IngredientLink = {
   letter: LetterKey;
 };
 
+export type DetailCell = {
+  text: string;
+  links: PageLink[];
+};
+
+export type DetailRow = {
+  label: string;
+  value: string;
+  cells: DetailCell[];
+};
+
+export type DetailSection = {
+  title: string;
+  rows: DetailRow[];
+};
+
+export type IngredientDetail = IngredientLink & {
+  title: string;
+  synonym: string;
+  category: string;
+  sections: DetailSection[];
+  extractedAt: string;
+};
+
 export type PageLink = {
   href: string;
   url: string;
@@ -71,17 +95,34 @@ const ENTITY_MAP: Record<string, string> = {
   quot: '"',
   apos: "'",
   nbsp: " ",
+  deg: "°",
+  plusmn: "±",
+  times: "×",
+  micro: "µ",
+  ndash: "–",
+  mdash: "—",
+  lsquo: "‘",
+  rsquo: "’",
+  ldquo: "“",
+  rdquo: "”",
+  hellip: "…",
+  copy: "©",
+  reg: "®",
 };
 
 function decodeEntities(value: string): string {
   return value
     .replace(/&#(\d+);/g, (_, n: string) => {
       const code = Number(n);
-      return Number.isFinite(code) ? String.fromCharCode(code) : _;
+      return Number.isInteger(code) && code >= 0 && code <= 0x10ffff
+        ? String.fromCodePoint(code)
+        : _;
     })
     .replace(/&#x([0-9a-f]+);/gi, (_, n: string) => {
       const code = Number.parseInt(n, 16);
-      return Number.isFinite(code) ? String.fromCharCode(code) : _;
+      return Number.isInteger(code) && code >= 0 && code <= 0x10ffff
+        ? String.fromCodePoint(code)
+        : _;
     })
     .replace(/&([a-z]+);/gi, (match, name: string) => {
       return ENTITY_MAP[name.toLowerCase()] ?? match;
@@ -89,7 +130,13 @@ function decodeEntities(value: string): string {
 }
 
 function stripTags(html: string): string {
-  return decodeEntities(html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim());
+  return decodeEntities(
+    html
+      .replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi, " ")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim(),
+  );
 }
 
 function firstMatch(source: string, pattern: RegExp): string {
@@ -97,11 +144,10 @@ function firstMatch(source: string, pattern: RegExp): string {
   return match?.[1]?.replace(/\s+/g, " ").trim() ?? "";
 }
 
-  const ROW_RE =
-    /<td>(?:\s*<div class="chtols">([\s\S]*?)<\/div>)?\s*<a href="#" onclick="openMainWindow\('(\/data\/[^']+)'\);return false;">([\s\S]*?)<\/a>([\s\S]*?)<\/td>/gi;
+const ROW_RE =
+  /<td>(?:\s*<div class="chtols">([\s\S]*?)<\/div>)?\s*<a href="#" onclick="openMainWindow\('(\/data\/[^']+)'\);return false;">([\s\S]*?)<\/a>([\s\S]*?)<\/td>/gi;
 
-  const HREF_RE = /<a\b[^>]*href="([^"#][^"]*)"[^>]*>([\s\S]*?)<\/a>/gi;
-
+const HREF_RE = /<a\b[^>]*href="([^"#][^"]*)"[^>]*>([\s\S]*?)<\/a>/gi;
 
 export function parseListingHtml(html: string, letter: LetterKey): ExtractResult {
   const ingredients: IngredientLink[] = [];
@@ -158,6 +204,80 @@ export function parseListingHtml(html: string, letter: LetterKey): ExtractResult
     title: stripTags(title),
     ingredients,
     pageLinks,
+    extractedAt: new Date().toISOString(),
+  };
+}
+
+function parseCellLinks(html: string): PageLink[] {
+  const links: PageLink[] = [];
+  for (const match of html.matchAll(
+    /<a\b[^>]*href\s*=\s*["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi,
+  )) {
+    const href = decodeEntities(match[1] ?? "").trim();
+    if (!href || /^(javascript:|mailto:|#)/i.test(href)) continue;
+    let url: string;
+    try {
+      url = new URL(href, TGSC_ORIGIN).href;
+    } catch {
+      continue;
+    }
+    links.push({ href, url, label: stripTags(match[2] ?? "") || href });
+  }
+  return links;
+}
+
+function parseDetailRow(html: string): DetailRow {
+  const cells: DetailCell[] = [];
+  for (const match of html.matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)) {
+    const cellHtml = match[1] ?? "";
+    cells.push({ text: stripTags(cellHtml), links: parseCellLinks(cellHtml) });
+  }
+
+  const label = cells[0]?.text ?? "";
+  const value =
+    cells.length > 1
+      ? cells
+          .slice(1)
+          .map((cell) => cell.text)
+          .filter(Boolean)
+          .join(" | ")
+      : "";
+  return { label, value, cells };
+}
+
+export function parseIngredientHtml(html: string, item: IngredientLink): IngredientDetail {
+  const sections: DetailSection[] = [];
+  const sectionPattern =
+    /<div\b[^>]*class=["'][^"']*\bsectionclass\b[^"']*["'][^>]*>([\s\S]*?)<\/div>([\s\S]*?)(?=<div\b[^>]*class=["'][^"']*\bsectionclass\b[^"']*["'][^>]*>|<\/section>|$)/gi;
+
+  for (const match of html.matchAll(sectionPattern)) {
+    const title = stripTags(match[1] ?? "");
+    const sectionHtml = match[2] ?? "";
+    const rows = [...sectionHtml.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)]
+      .map((row) => parseDetailRow(row[1] ?? ""))
+      .filter((row) => row.cells.length > 0);
+    sections.push({ title, rows });
+  }
+
+  const title =
+    firstMatch(html, /<span\b[^>]*itemprop=["']name["'][^>]*>([\s\S]*?)<\/span>/i) ||
+    firstMatch(html, /<title>([\s\S]*?)<\/title>/i) ||
+    item.name;
+  const synonym = firstMatch(
+    html,
+    /<span\b[^>]*class=["'][^"']*\bheadsynonym\b[^"']*["'][^>]*>([\s\S]*?)<\/span>/i,
+  );
+  const category = firstMatch(
+    html,
+    /<div\b[^>]*class=["'][^"']*\bqinfr2\b[^"']*["'][^>]*>[\s\S]*?<span\b[^>]*>([\s\S]*?)<\/span>/i,
+  );
+
+  return {
+    ...item,
+    title: stripTags(title),
+    synonym: stripTags(synonym),
+    category: stripTags(category),
+    sections,
     extractedAt: new Date().toISOString(),
   };
 }

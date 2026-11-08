@@ -1,4 +1,4 @@
-//#region node_modules/.nitro/vite/services/ssr/assets/tgsc-Bfrw_1Zu.js
+//#region node_modules/.nitro/vite/services/ssr/assets/tgsc-B-UjHrEs.js
 var TGSC_ORIGIN = "https://www.thegoodscentscompany.com";
 /** TGSC groups J/K and W/X onto shared listing pages. */
 var LETTER_PAGES = [
@@ -39,21 +39,34 @@ var ENTITY_MAP = {
 	gt: ">",
 	quot: "\"",
 	apos: "'",
-	nbsp: " "
+	nbsp: " ",
+	deg: "°",
+	plusmn: "±",
+	times: "×",
+	micro: "µ",
+	ndash: "–",
+	mdash: "—",
+	lsquo: "‘",
+	rsquo: "’",
+	ldquo: "“",
+	rdquo: "”",
+	hellip: "…",
+	copy: "©",
+	reg: "®"
 };
 function decodeEntities(value) {
 	return value.replace(/&#(\d+);/g, (_, n) => {
 		const code = Number(n);
-		return Number.isFinite(code) ? String.fromCharCode(code) : _;
+		return Number.isInteger(code) && code >= 0 && code <= 1114111 ? String.fromCodePoint(code) : _;
 	}).replace(/&#x([0-9a-f]+);/gi, (_, n) => {
 		const code = Number.parseInt(n, 16);
-		return Number.isFinite(code) ? String.fromCharCode(code) : _;
+		return Number.isInteger(code) && code >= 0 && code <= 1114111 ? String.fromCodePoint(code) : _;
 	}).replace(/&([a-z]+);/gi, (match, name) => {
 		return ENTITY_MAP[name.toLowerCase()] ?? match;
 	});
 }
 function stripTags(html) {
-	return decodeEntities(html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim());
+	return decodeEntities(html.replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi, " ").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim());
 }
 function firstMatch(source, pattern) {
 	return source.match(pattern)?.[1]?.replace(/\s+/g, " ").trim() ?? "";
@@ -107,5 +120,61 @@ function parseListingHtml(html, letter) {
 		extractedAt: (/* @__PURE__ */ new Date()).toISOString()
 	};
 }
+function parseCellLinks(html) {
+	const links = [];
+	for (const match of html.matchAll(/<a\b[^>]*href\s*=\s*["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)) {
+		const href = decodeEntities(match[1] ?? "").trim();
+		if (!href || /^(javascript:|mailto:|#)/i.test(href)) continue;
+		let url;
+		try {
+			url = new URL(href, TGSC_ORIGIN).href;
+		} catch {
+			continue;
+		}
+		links.push({
+			href,
+			url,
+			label: stripTags(match[2] ?? "") || href
+		});
+	}
+	return links;
+}
+function parseDetailRow(html) {
+	const cells = [];
+	for (const match of html.matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)) {
+		const cellHtml = match[1] ?? "";
+		cells.push({
+			text: stripTags(cellHtml),
+			links: parseCellLinks(cellHtml)
+		});
+	}
+	return {
+		label: cells[0]?.text ?? "",
+		value: cells.length > 1 ? cells.slice(1).map((cell) => cell.text).filter(Boolean).join(" | ") : "",
+		cells
+	};
+}
+function parseIngredientHtml(html, item) {
+	const sections = [];
+	for (const match of html.matchAll(/<div\b[^>]*class=["'][^"']*\bsectionclass\b[^"']*["'][^>]*>([\s\S]*?)<\/div>([\s\S]*?)(?=<div\b[^>]*class=["'][^"']*\bsectionclass\b[^"']*["'][^>]*>|<\/section>|$)/gi)) {
+		const title = stripTags(match[1] ?? "");
+		const rows = [...(match[2] ?? "").matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)].map((row) => parseDetailRow(row[1] ?? "")).filter((row) => row.cells.length > 0);
+		sections.push({
+			title,
+			rows
+		});
+	}
+	const title = firstMatch(html, /<span\b[^>]*itemprop=["']name["'][^>]*>([\s\S]*?)<\/span>/i) || firstMatch(html, /<title>([\s\S]*?)<\/title>/i) || item.name;
+	const synonym = firstMatch(html, /<span\b[^>]*class=["'][^"']*\bheadsynonym\b[^"']*["'][^>]*>([\s\S]*?)<\/span>/i);
+	const category = firstMatch(html, /<div\b[^>]*class=["'][^"']*\bqinfr2\b[^"']*["'][^>]*>[\s\S]*?<span\b[^>]*>([\s\S]*?)<\/span>/i);
+	return {
+		...item,
+		title: stripTags(title),
+		synonym: stripTags(synonym),
+		category: stripTags(category),
+		sections,
+		extractedAt: (/* @__PURE__ */ new Date()).toISOString()
+	};
+}
 //#endregion
-export { parseListingHtml as i, isLetterKey as n, listingUrl as r, LETTER_PAGES as t };
+export { parseIngredientHtml as a, listingUrl as i, TGSC_ORIGIN as n, parseListingHtml as o, isLetterKey as r, LETTER_PAGES as t };

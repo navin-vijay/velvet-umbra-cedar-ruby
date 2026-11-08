@@ -1,3 +1,4 @@
+import { readFile, readdir } from "node:fs/promises";
 import { pendingMigrations } from "../../scripts/migration-plan.mjs";
 
 /** Which database backend is active. */
@@ -137,11 +138,25 @@ async function createPgliteSql(): Promise<Sql> {
   // passes serialized on a global chain so concurrent callers never
   // double-apply.
   const migrate = async (): Promise<void> => {
-    const migrations = import.meta.glob("/migrations/*.sql", {
-      query: "?raw",
-      import: "default",
-      eager: true,
-    }) as Record<string, string>;
+    let migrations: Record<string, string>;
+    if (typeof import.meta.glob === "function") {
+      migrations = import.meta.glob("/migrations/*.sql", {
+        query: "?raw",
+        import: "default",
+        eager: true,
+      }) as Record<string, string>;
+    } else {
+      const migrationsDir = new URL("../../migrations/", import.meta.url);
+      const entries = await readdir(migrationsDir, { withFileTypes: true });
+      const migrationEntries = entries
+        .filter((entry) => entry.isFile() && entry.name.endsWith(".sql"))
+        .map((entry) => entry.name);
+      migrations = {} as Record<string, string>;
+      for (const name of migrationEntries) {
+        const fileUrl = new URL(name, migrationsDir);
+        migrations[fileUrl.pathname] = await readFile(fileUrl, "utf8");
+      }
+    }
     const doneRows = await pg.query<{ name: string }>(
       "select name from _migrations",
     );
